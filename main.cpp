@@ -53,6 +53,82 @@ int min_swaps_needed(string first, string second){
 			return swaps[first.length()][second.length()];
 		}
 
+int numGems(int steps, vector<int> mag){
+
+	int max = 0;												
+	for(int i = 0; i<mag.size(); i++){
+		if(mag[i] > max)
+			max = mag[i];
+	}
+
+	vector<int> correctSizeZeroVect(max+1,0);
+	vector<vector<int> > memo(mag.size(),correctSizeZeroVect); 	//mag.size-1 by max array (all zeros to begin)
+																//column is min power allowed, row is index
+																//fill in backwards
+
+
+	int r = mag.size()-1;										//start by filling in top row
+	for(int c = max; c>=0; c--)									//if this maggi's value is large enough, write a 1
+		memo[r][c] = (mag[r] >= c);
+
+	r--;
+	int valAbove;
+	int takingThis;
+	while (r>=0){
+		for(int c = max; c>=0; c--){
+			
+			valAbove = memo[r+1][c];
+
+			if(mag[r] < c)											//if this maggi couldn't be selected regardless,
+				takingThis = 0;										//don't select it
+			else{
+				takingThis = 1;					
+
+				if(mag[r]+1 <= max){								//if this maggi can be taken while leaving other selections possible
+					takingThis += memo[r+1][mag[r]+1];				//add the max number of other selections from above
+				}
+			}
+			
+			memo[r][c] = (takingThis>valAbove)?takingThis:valAbove;	//take the max of if you selected or rejected this maggi
+		}
+		r--;
+
+	}
+
+	out(memo);
+
+	//if it took too many steps, return -1
+	if(memo[0][0] > steps)
+		return -1;
+
+	//trace back
+	r = 0;
+	int c = 1;
+	int numGems = 0;
+	int numSteps = 0;
+	while(r<mag.size()-1){
+
+		//if you took this one, add his value to the gems
+		if(memo[r][c] > memo[r+1][c]){
+
+			numGems += mag[r];
+
+			//trace back
+			c = mag[r]+1;
+		}
+
+		r++;
+	}
+
+	//if you took the last one, add it's gems
+	if(memo[r][c] == 1){
+		numGems += mag[r];
+	}
+
+	return numGems;
+
+}
+
 int main(){
 
     // Code goes here!
