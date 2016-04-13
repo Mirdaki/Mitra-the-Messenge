@@ -1,10 +1,18 @@
 // SQUAD Project 2
-// COP 3502
-#include<iostream>
-#include<string>
-#include<math.h>
+// COP 3530
+#include <iostream>
+#include <string>
+#include <vector>
+#include <queue>
+#include <math.h>
 
 using namespace std;
+
+struct Realm {
+	string name;
+	vector<int> magi;
+};
+
 
 // input parameters are 2 strings, output is minimum number of swaps to get from 1 string to another 
 int min_swaps_needed(string first, string second){
@@ -53,7 +61,7 @@ int min_swaps_needed(string first, string second){
 // where N is the length of string 1 and M is the length of String 2
 }
 
-int numGems(int steps, vector<int> mag){
+int num_gems(int steps, vector<int> mag){
 
 	int max = 0;												
 	for(int i = 0; i<mag.size(); i++){
@@ -95,7 +103,7 @@ int numGems(int steps, vector<int> mag){
 
 	}
 
-	out(memo);
+	//out(memo);
 
 	//if it took too many steps, return -1
 	if(memo[0][0] > steps)
@@ -130,8 +138,38 @@ int numGems(int steps, vector<int> mag){
 }
 
 int main(){
+	int N;
+	cin >> N;
+	Realm realms[N];
 
-    // Code goes here!
+	for (int i = 0; i < N; i++) {
+		string name;
+		cin >> name;
+
+		// Get the number of magi, and add them to a vector
+		vector<int> magi;
+		int num_magi;
+		cin >> num_magi;
+		for (int j = 0; j < num_magi; j++) {
+			int num;
+			magi.push_back(num);
+		}
+
+		realms[i].name = name;
+		realms[i].magi = magi;
+	}
+
+	vector<vector<int> > graph( N, vector<int>(0, N) );
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			if (i != j) {
+				int gems = num_gems(min_swaps_needed(realms[i].name, realms[j].name), realms[i].magi);
+				graph[i][j] = gems;
+			}
+		} 
+	}
+
+	// Do Dijkstras
 
     return 0;
 }
