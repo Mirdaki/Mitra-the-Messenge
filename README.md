@@ -9,7 +9,7 @@ int numSteps(str a, str b) // Given two strings, return the number of operations
 
 int numGems(int steps, int[] magi) // Given the number of steps to change the string and a vector of integers return the number of gems necessary or -1 if impossible
 
-Create Table, 2D vector with row and column of all realms,  with the number of gems necessary to move between two realms at the intersections.
+Create Table, 2D vector with row and column of all realms, with the number of steps necessary to move between two realms at the intersections.
 
 Dijkstra for deciding the optimal path from the beginning realm to the destination realm.
 

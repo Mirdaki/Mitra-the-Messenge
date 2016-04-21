@@ -11,41 +11,48 @@ using namespace std;
 struct Realm {
 	string name;
 	vector<int> magi;
+    int distance = -1; // May want to default this to -1
+    int numId;
 };
 
+struct compare {
+    bool operator() (const Realm& x, const Realm& y){
+        return x.distance > y.distance;
+    }
+};
 
-// input parameters are 2 strings, output is minimum number of swaps to get from 1 string to another 
+// input parameters are 2 strings, output is minimum number of swaps to get from 1 string to another
 int min_swaps_needed(string first, string second){
 
 // Empty 2D array is created to store the previously computed optimal solutions
 	int swaps[first.length()+1][second.length()+1];
 
-// first row is set to 0,1,2,3.....first.length()-1	
+// first row is set to 0,1,2,3.....first.length()-1
 	for(int i=0; i<first.length()+1; i++){
 		swaps[i][0] = i;}
-		
-// first column is set to 0,1,2,3.... second.length()-1	
+
+// first column is set to 0,1,2,3.... second.length()-1
 	for(int j=0; j<second.length()+1; j++){
 		swaps[0][j] = j;}
 /** after the above 2 operations we have something like this, the goal of the next 2 for loops is to build up the rest of the 2D array
- * 
+ *
  *  0 1 2 3 4 5
  *  1 0 0 0 0 0
  *  2 0 0 0 0 0
  *  3 0 0 0 0 0
- * 
+ *
  **/
- 
-// now we itterate through the rest of the 2D array and we build it bottom up using the initial row and column 
+
+// now we itterate through the rest of the 2D array and we build it bottom up using the initial row and column
 		for(int i=1; i<second.length()+1; i++){
 			for(int j=1; j<first.length()+1; j++){
-			
+
 // we compare 2 elements in the string
 				if(second.at(i-1) == first.at(j-1)){
-// we have a match, we use the previous optimal amount which is in the top left adjacent location 
+// we have a match, we use the previous optimal amount which is in the top left adjacent location
 					swaps[j][i] = swaps[j-1][i-1];}
-					
-// no match, we take the minimum of the three previous optimal solutions and add 1		
+
+// no match, we take the minimum of the three previous optimal solutions and add 1
 				else{
 // the min() function in C++ compares only 2 things at once so I had to run it twice since we have to find the min of 3 elements
 					int compare = min(swaps[j][i-1], swaps[j-1][i]);
@@ -53,17 +60,17 @@ int min_swaps_needed(string first, string second){
 					swaps[j][i] = minimum+1;}
 			}
 		}
-// after the whole 2D array is built, the number of swaps required is the number in the lower right location of the 2D array 			
+// after the whole 2D array is built, the number of swaps required is the number in the lower right location of the 2D array
 	return swaps[first.length()][second.length()];
-			
-// space complextiy of this algorithm is O(N*M) 
-// time complextiy of this algorithm is O(N*M) 
+
+// space complextiy of this algorithm is O(N*M)
+// time complextiy of this algorithm is O(N*M)
 // where N is the length of string 1 and M is the length of String 2
 }
 
 int num_gems(int steps, vector<int> mag){
 
-	int max = 0;												
+	int max = 0;
 	for(int i = 0; i<mag.size(); i++){
 		if(mag[i] > max)
 			max = mag[i];
@@ -84,19 +91,19 @@ int num_gems(int steps, vector<int> mag){
 	int takingThis;
 	while (r>=0){
 		for(int c = max; c>=0; c--){
-			
+
 			valAbove = memo[r+1][c];
 
 			if(mag[r] < c)											//if this maggi couldn't be selected regardless,
 				takingThis = 0;										//don't select it
 			else{
-				takingThis = 1;					
+				takingThis = 1;
 
 				if(mag[r]+1 <= max){								//if this maggi can be taken while leaving other selections possible
 					takingThis += memo[r+1][mag[r]+1];				//add the max number of other selections from above
 				}
 			}
-			
+
 			memo[r][c] = (takingThis>valAbove)?takingThis:valAbove;	//take the max of if you selected or rejected this maggi
 		}
 		r--;
@@ -137,6 +144,73 @@ int num_gems(int steps, vector<int> mag){
 
 }
 
+// This will find the the shortest path if possible, and print out the results
+void dijkstra(Realm& start, Realm& final, vector<vector<int>>& graph, Realm realms[]){
+
+    // Minimum Priority Queue to find the next shortest path
+    priority_queue<Realm, vector<Realm>, compare> minQue;
+
+    // Assign start node a distance of zero and add it to queue
+    start.distance = 0;
+    minQue.push(start);
+
+    // Add all but start realm to unvisted list
+    queue <Realm> unvisted;
+    for (int i = 0; i < realms.size(); i++){
+        if (realms[i].name != start.name) unvisted.push(realms[i]);
+    }
+
+    // This will be used to keep track of total distance and if we reached the final realm
+    Realm current;
+
+    // The actual dijkstra algorithim
+    while (minQue.empty() == false){
+
+        // Make current the next shortest path
+        current = minQue.top();
+        minQue.pop();
+
+        // Break if we have destination
+        if (final.name == current.name) break;
+
+        // Empty the priority queue so the new distances can be added
+        while (minQue.empty() == false) {
+            minQue.pop();
+        }
+
+        // Go through each unvisted Realm
+        for (int i = 0; i < unvisted.size() - 1; i++){ // May have an issue with size, seeing it's being chnaged in loop
+
+            // If you hit current, don't put it back in
+            if (unvisted.front().name != current.name){
+
+                // Accounting for realms with no distance
+                if (unvisted.front().distance == -1){ // May want to make this -1 instead of NULL
+                    unvisted.front().distance = graph[current.numId][unvisted.front().numId];
+                } else {
+                    // Get the new distance
+                    int newDistance = current.distance + graph[current.numId][unvisted.front().numId];
+                    // If new distance is less than previous, change previous and add to priority queue
+                    if (newDistance < unvisted.front().distance) unvisted.front().distance = newDistance;
+                }
+
+                // Add realm back to unvisted queue
+                unvisted.push(unvisted.front());
+                minQue.push(unvisted.front());
+            }
+            // Pop unvisted queue
+            unvisted.pop();
+        }
+    }
+
+    // Print the results
+    if (current.name != final.name){
+        cout << "IMPOSSIBLE";
+    } else {
+        cout << current.distance;
+    }
+}
+
 int main(){
 	int N;
 	cin >> N;
@@ -166,7 +240,7 @@ int main(){
 				int gems = num_gems(min_swaps_needed(realms[i].name, realms[j].name), realms[i].magi);
 				graph[i][j] = gems;
 			}
-		} 
+		}
 	}
 
 	// Do Dijkstras
