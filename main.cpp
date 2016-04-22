@@ -122,7 +122,7 @@ vector<int> numGems(vector<int> mag){
 	//trace back
 	r = 0;
 	int c = 1;
-	int numGems = 0;
+	int numberGems = 0;
 	vector<int> gemsUsed;
 	gemsUsed.push_back(0);
 	while(r<mag.size()-1){
@@ -130,9 +130,9 @@ vector<int> numGems(vector<int> mag){
 		//if you took this one, add his value to the gems
 		if(memo[r][c] > memo[r+1][c]){
 
-			numGems += mag[r];
+			numberGems += mag[r];
 
-			gemsUsed.push_back(numGems);
+			gemsUsed.push_back(numberGems);
 
 			//trace back
 			c = mag[r]+1;
@@ -145,7 +145,7 @@ vector<int> numGems(vector<int> mag){
 
 	//if you took the last one, add it's gems
 	if(memo[r][c] == 1){
-		numGems += mag[r];
+		numberGems += mag[r];
 		gemsUsed.push_back(numGems);
 	}
 
