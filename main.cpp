@@ -283,7 +283,7 @@ int main(){
 
 		// Backtrace to find number of gems
 		while (current.numId != start.numId) {
-			total_gems += current.gems_required[[current.lastRealmId][current.numId]];
+			total_gems += current.gems_required[graph[current.lastRealmId][current.numId]];
 			current = realms[current.lastRealmId];
 		}
 
@@ -310,7 +310,7 @@ int main(){
 		// Backtrace to find number of gems
 		while (current.numId != end.numId) {
 
-			total_gems += current.gems_required[[current.lastRealmId][current.numId]];
+			total_gems += current.gems_required[graph[current.lastRealmId][current.numId]];
 
 			current = realms[current.lastRealmId];
 		}
