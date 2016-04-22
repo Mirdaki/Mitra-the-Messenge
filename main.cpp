@@ -5,13 +5,14 @@
 #include <vector>
 #include <queue>
 #include <math.h>
+#include <limits>
 
 using namespace std;
 
 struct Realm {
 	string name;
 	vector<int> magi;
-    int distance = -1; // May want to default this to -1
+    int distance = numeric_limits<int>::max(); // May want to default this to -1
     int numId;
 };
 
@@ -185,7 +186,7 @@ void dijkstra(Realm& start, Realm& final, vector<vector<int>>& graph, Realm real
             if (unvisted.front().name != current.name){
 
                 // Accounting for realms with no distance
-                if (unvisted.front().distance == -1){ // May want to make this -1 instead of NULL
+                if (unvisted.front().distance == numeric_limits<int>::max()){ // May want to make this -1 instead of NULL
                     unvisted.front().distance = graph[current.numId][unvisted.front().numId];
                 } else {
                     // Get the new distance
