@@ -241,17 +241,40 @@ int main(){
 		realms.push_back(r);
 	}
 
+	string start_name, end_name;
+	cin >> start_name >> end_name;
+
+	Realm start, end;
+	for (int i = 0; i < N; i++) {
+		if (start_name == realms[i].name) start = realms[i];
+		if (end_name == realms[i].name) end = realms[i];
+	}
+
 	vector<vector<int> > graph( N, vector<int>(0, N) );
+	vector<vector<int> > gems(N, vector<int>(0, N));
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
 			if (i != j) {
-				int gems = num_gems(min_swaps_needed(realms[i].name, realms[j].name), realms[i].magi);
-				graph[i][j] = gems;
+				int min_swaps = min_swaps_needed(realms[i].name, realms[j].name);
+				int gems_required = num_gems(min_swaps, realms[i].magi);
+
+				graph[i][j] = min_swaps;
+				gems[i][j] = gems_required;
 			}
 		}
 	}
 
 	// Do Dijkstras
+	dijkstra(start, end, graph, realms);
+
+	if (end.distance == numeric_limits<int>::max()) {
+		cout << "IMPOSSIBLE";
+	} else {
+		int total_gems = 0;
+		Realm current = end;
+
+		// Backtrace to find number of gems
+	}
 
     return 0;
 }
