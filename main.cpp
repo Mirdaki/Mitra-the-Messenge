@@ -126,9 +126,11 @@ int num_gems(int steps, vector<int> mag){
 	while(r<mag.size()-1){
 
 		//if you took this one, add his value to the gems
-		if(memo[r][c] > memo[r+1][c]){
+		if(memo[r][c] > memo[r+1][c] && numSteps < steps){
 
 			numGems += mag[r];
+			
+			numSteps++;
 
 			//trace back
 			c = mag[r]+1;
@@ -138,7 +140,7 @@ int num_gems(int steps, vector<int> mag){
 	}
 
 	//if you took the last one, add it's gems
-	if(memo[r][c] == 1){
+	if(numSteps < steps && memo[r][c] == 1){
 		numGems += mag[r];
 	}
 
