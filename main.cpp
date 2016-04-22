@@ -113,7 +113,7 @@ vector<int> numGems(vector<int> mag){
 
 	}
 
-	out(memo);
+	//out(memo);
 
 	//if it took too many steps, return -1
 	// if(memo[0][0] < steps)
@@ -284,7 +284,7 @@ int main(){
 
 		// Backtrace to find number of gems
 		while (current.numId != start.numId) {
-			total_gems += gems[current.lastRealmId][current.numId];
+			total_gems += current.gems_required[[current.lastRealmId][current.numId]];
 			current = realms[current.lastRealmId];
 		}
 
@@ -312,7 +312,7 @@ int main(){
 		while (current.numId != end.numId) {
 		//	cout << "Current: " << current.numId << endl;
 	//		cout << "previous: " << current.lastRealmId << endl;
-			total_gems += gems[current.lastRealmId][current.numId];
+			total_gems += current.gems_required[[current.lastRealmId][current.numId]];
 			current = realms[current.lastRealmId];
 		}
 
