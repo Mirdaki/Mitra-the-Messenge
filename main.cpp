@@ -146,7 +146,7 @@ int num_gems(int steps, vector<int> mag){
 }
 
 // This will find the the shortest path if possible, and print out the results
-void dijkstra(Realm& start, Realm& final, vector<vector<int>>& graph, Realm realms[]){
+void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Realm> realms){
 
     // Minimum Priority Queue to find the next shortest path
     priority_queue<Realm, vector<Realm>, compare> minQue;
@@ -215,9 +215,10 @@ void dijkstra(Realm& start, Realm& final, vector<vector<int>>& graph, Realm real
 int main(){
 	int N;
 	cin >> N;
-	Realm realms[N];
+	vector<Realm> realms;
 
 	for (int i = 0; i < N; i++) {
+		Realm r;
 		string name;
 		cin >> name;
 
@@ -230,8 +231,10 @@ int main(){
 			magi.push_back(num);
 		}
 
-		realms[i].name = name;
-		realms[i].magi = magi;
+		r.name = name;
+		r.magi = magi;
+		r.numId = i;
+		realms.push_back(r);
 	}
 
 	vector<vector<int> > graph( N, vector<int>(0, N) );
