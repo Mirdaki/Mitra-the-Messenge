@@ -147,7 +147,7 @@ int num_gems(int steps, vector<int> mag){
 }
 
 // This will find the the shortest path if possible, and print out the results
-void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Realm> realms){
+void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Realm>& realms){
 
     // Minimum Priority Queue to find the next shortest path
     priority_queue<Realm, vector<Realm>, compare> minQue;
@@ -264,7 +264,7 @@ int main(){
 		}
 	}
 
-	// Do Dijkstras
+	// Do Dijkstras from start to end
 	dijkstra(start, end, graph, realms);
 
 	if (end.distance == numeric_limits<int>::max()) {
@@ -274,7 +274,39 @@ int main(){
 		Realm current = end;
 
 		// Backtrace to find number of gems
+		while (current.numId != start.numId) {
+			total_gems += gems[current.lastRealmId][current.numId];
+			current = realms[current.lastRealmId];
+		}
+
+		cout << end.distance << " " << total_gems << endl;
 	}
+
+	// Reset distances
+	for (int i = 0; i < N; i++) {
+		realms[i].distance = numeric_limits<int>::max();
+	}
+
+
+
+	// Do Dijkstras from end to start
+	dijkstra(end, start, graph, realms);
+
+	if (start.distance == numeric_limits<int>::max()) {
+		cout << "IMPOSSIBLE";
+	} else {
+		int total_gems = 0;
+		Realm current = start;
+
+		// Backtrace to find number of gems
+		while (current.numId != end.numId) {
+			total_gems += gems[current.lastRealmId][current.numId];
+			current = realms[current.lastRealmId];
+		}
+
+		cout << start.distance << " " << total_gems << endl;
+	}
+
 
     return 0;
 }
