@@ -12,6 +12,7 @@ using namespace std;
 struct Realm {
 	string name;
 	vector<int> magi;
+	vector<int> gems_required;
     int distance = numeric_limits<int>::max(); // May want to default this to -1
     int numId;
     int lastRealmId;
@@ -253,17 +254,15 @@ int main(){
 	}
 
 	vector<vector<int> > graph( N, vector<int>(N,0) );
-	vector<vector<int> > gems(N, vector<int>(N,0));
+
 	for (int i = 0; i < N; i++) {
+		// Calculate the number of gems required for a given number of incantations/swaps
+		realms[i].gems_required = num_gems(realms[i].magi);
+
 		for (int j = 0; j < N; j++) {
 			if (i != j) {
 				int min_swaps = min_swaps_needed(realms[i].name, realms[j].name);
-				int gems_required = num_gems(min_swaps, realms[i].magi);
-
-				cout << "I: " << i << " J: " << j << endl;
-
 				graph[i][j] = min_swaps;
-				gems[i][j] = gems_required;
 			}
 		}
 	}
@@ -274,7 +273,6 @@ int main(){
 	if (end.distance == numeric_limits<int>::max()) {
 		cout << "IMPOSSIBLE" << endl;
 	} else {
-		cout << "Starting backtrack" << endl;
 		int total_gems = 0;
 		Realm current = end;
 
@@ -282,7 +280,6 @@ int main(){
 		while (current.numId != start.numId) {
 			total_gems += gems[current.lastRealmId][current.numId];
 			current = realms[current.lastRealmId];
-			cout << "asdf" << endl;
 		}
 
 
@@ -296,12 +293,9 @@ int main(){
 	}
 
 
-	cout << "Starting 2nd" << endl;
 	// Do Dijkstras from end to start
 	dijkstra(end, start, graph, realms);
-	cout << "Finished " << endl;
-	cout << start.distance << endl;
-
+	
 	if (start.distance == numeric_limits<int>::max()) {
 		cout << "IMPOSSIBLE" << endl;
 	} else {
@@ -310,11 +304,11 @@ int main(){
 
 		// Backtrace to find number of gems
 		while (current.numId != end.numId) {
-			cout << "Current: " << current.numId << endl;
-			cout << "previous: " << current.lastRealmId << endl;
+		//	cout << "Current: " << current.numId << endl;
+	//		cout << "previous: " << current.lastRealmId << endl;
 			total_gems += gems[current.lastRealmId][current.numId];
 			current = realms[current.lastRealmId];
-			cout << "asdf" << endl;	
+	//		cout << "asdf" << endl;	
 		}
 
 		cout << start.distance << " " << total_gems << endl;
