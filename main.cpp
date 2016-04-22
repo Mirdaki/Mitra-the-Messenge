@@ -129,7 +129,7 @@ int num_gems(int steps, vector<int> mag){
 		if(memo[r][c] > memo[r+1][c] && numSteps < steps){
 
 			numGems += mag[r];
-			
+
 			numSteps++;
 
 			//trace back
@@ -189,13 +189,13 @@ void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Re
             if (unvisted.front().name != current.name){
 
                 // Accounting for realms with no distance
-                if (unvisted.front().distance == numeric_limits<int>::max()){ // May want to make this -1 instead of NULL
+                if (unvisted.front().distance == numeric_limits<int>::max() && unvisted.jems_required.size() - 1 < graph[current.numId][unvisted.front().numId){ // May want to make this -1 instead of NULL
                     unvisted.front().distance = graph[current.numId][unvisted.front().numId];
                 } else {
                     // Get the new distance
                     int newDistance = current.distance + graph[current.numId][unvisted.front().numId];
                     // If new distance is less than previous, change previous and add to priority queue
-                    if (newDistance < unvisted.front().distance){
+                    if (newDistance < unvisted.front().distance && unvisted.jems_required.size() - 1 < graph[current.numId][unvisted.front().numId){
                         unvisted.front().lastRealmId = current.numId;
                         unvisted.front().distance = newDistance;
                     }
@@ -316,7 +316,7 @@ int main(){
 			cout << "previous: " << current.lastRealmId << endl;
 			total_gems += gems[current.lastRealmId][current.numId];
 			current = realms[current.lastRealmId];
-			cout << "asdf" << endl;	
+			cout << "asdf" << endl;
 		}
 
 		cout << start.distance << " " << total_gems << endl;
