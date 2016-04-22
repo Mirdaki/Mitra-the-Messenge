@@ -73,7 +73,7 @@ int min_swaps_needed(string first, string second){
 
 vector<int> numGems(vector<int> mag){
 
-	int max = 0;												
+	int max = 0;
 	for(int i = 0; i<mag.size(); i++){
 		if(mag[i] > max)
 			max = mag[i];
@@ -94,19 +94,19 @@ vector<int> numGems(vector<int> mag){
 	int takingThis;
 	while (r>=0){
 		for(int c = max; c>=0; c--){
-			
+
 			valAbove = memo[r+1][c];
 
 			if(mag[r] < c)											//if this maggi couldn't be selected regardless,
 				takingThis = 0;										//don't select it
 			else{
-				takingThis = 1;					
+				takingThis = 1;
 
 				if(mag[r]+1 <= max){								//if this maggi can be taken while leaving other selections possible
 					takingThis += memo[r+1][mag[r]+1];				//add the max number of other selections from above
 				}
 			}
-			
+
 			memo[r][c] = (takingThis>valAbove)?takingThis:valAbove;	//take the max of if you selected or rejected this maggi
 		}
 		r--;
@@ -193,21 +193,18 @@ void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Re
         // Go through each unvisted Realm
         for (int i = 0; i < unvisted.size() - 1; i++){ // May have an issue with size, seeing it's being chnaged in loop
 
-            // If you hit current, don't put it back in
-            if (unvisted.front().name != current.name){
-
-                // Accounting for realms with no distance
-                if (unvisted.front().distance == numeric_limits<int>::max() && unvisted.jems_required.size() - 1 < graph[current.numId][unvisted.front().numId){ // May want to make this -1 instead of NULL
-                    unvisted.front().distance = graph[current.numId][unvisted.front().numId];
-                } else {
-                    // Get the new distance
-                    int newDistance = current.distance + graph[current.numId][unvisted.front().numId];
-                    // If new distance is less than previous, change previous and add to priority queue
-                    if (newDistance < unvisted.front().distance && unvisted.jems_required.size() - 1 < graph[current.numId][unvisted.front().numId){
-                        unvisted.front().lastRealmId = current.numId;
-                        unvisted.front().distance = newDistance;
-                    }
+            // Accounting for realms with no distance
+            if (unvisted.front().distance == numeric_limits<int>::max() && unvisted.gems_required.size() > graph[current.numId][unvisted.front().numId]){ // May want to make this -1 instead of NULL
+                unvisted.front().distance = graph[current.numId][unvisted.front().numId];
+            } else {
+                // Get the new distance
+                int newDistance = current.distance + graph[current.numId][unvisted.front().numId];
+                // If new distance is less than previous, change previous and add to priority queue
+                if (newDistance < unvisted.front().distance && unvisted.gems_required.size() > graph[current.numId][unvisted.front().numId]){
+                    unvisted.front().lastRealmId = current.numId;
+                    unvisted.front().distance = newDistance;
                 }
+            }
 
                 // Add realm back to unvisted queue
                 unvisted.push(unvisted.front());
@@ -304,7 +301,7 @@ int main(){
 
 	// Do Dijkstras from end to start
 	dijkstra(end, start, graph, realms);
-	
+
 	if (start.distance == numeric_limits<int>::max()) {
 		cout << "IMPOSSIBLE" << endl;
 	} else {
