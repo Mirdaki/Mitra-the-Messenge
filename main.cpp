@@ -191,7 +191,7 @@ void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Re
         }
 
         // Go through each unvisted Realm
-        for (int i = 0; i < unvisted.size() - 1; i++){ // May have an issue with size, seeing it's being chnaged in loop
+        for (int i = 0; i < unvisted.size(); i++){ // May have an issue with size, seeing it's being chnaged in loop
 
             // Accounting for realms with no distance
             if (unvisted.front().distance == numeric_limits<int>::max() && unvisted.front().gems_required.size() > graph[current.numId][unvisted.front().numId]){ // May want to make this -1 instead of NULL
@@ -213,6 +213,7 @@ void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Re
             unvisted.pop();
         }
     }
+    cout << current.distance << endl;
 
     // // Print the results
     // if (current.name != final.name){
@@ -321,3 +322,21 @@ int main(){
 
     return 0;
 }
+
+/*
+4
+sitting
+6
+1 2 1 3 2 4
+knitting
+4
+4 2 3 1
+knowing
+5
+2 3 1 4 2
+kneeding
+4
+1 3 4 2
+sitting
+kneeding
+*/
