@@ -71,9 +71,9 @@ int min_swaps_needed(string first, string second){
 // where N is the length of string 1 and M is the length of String 2
 }
 
-int num_gems(int steps, vector<int> mag){
+vector<int> numGems(vector<int> mag){
 
-	int max = 0;
+	int max = 0;												
 	for(int i = 0; i<mag.size(); i++){
 		if(mag[i] > max)
 			max = mag[i];
@@ -94,44 +94,45 @@ int num_gems(int steps, vector<int> mag){
 	int takingThis;
 	while (r>=0){
 		for(int c = max; c>=0; c--){
-
+			
 			valAbove = memo[r+1][c];
 
 			if(mag[r] < c)											//if this maggi couldn't be selected regardless,
 				takingThis = 0;										//don't select it
 			else{
-				takingThis = 1;
+				takingThis = 1;					
 
 				if(mag[r]+1 <= max){								//if this maggi can be taken while leaving other selections possible
 					takingThis += memo[r+1][mag[r]+1];				//add the max number of other selections from above
 				}
 			}
-
+			
 			memo[r][c] = (takingThis>valAbove)?takingThis:valAbove;	//take the max of if you selected or rejected this maggi
 		}
 		r--;
 
 	}
 
-	//out(memo);
+	out(memo);
 
-	//if the number of steps can't be achieved, return -1
-	if(memo[0][0] < steps)
-		return -1;
+	//if it took too many steps, return -1
+	// if(memo[0][0] < steps)
+	// 	// return -1;
 
 	//trace back
 	r = 0;
 	int c = 1;
 	int numGems = 0;
-	int numSteps = 0;
+	vector<int> gemsUsed;
+	gemsUsed.push_back(0);
 	while(r<mag.size()-1){
 
 		//if you took this one, add his value to the gems
-		if(memo[r][c] > memo[r+1][c] && numSteps < steps){
+		if(memo[r][c] > memo[r+1][c]){
 
 			numGems += mag[r];
 
-			numSteps++;
+			gemsUsed.push_back(numGems);
 
 			//trace back
 			c = mag[r]+1;
@@ -140,12 +141,18 @@ int num_gems(int steps, vector<int> mag){
 		r++;
 	}
 
+
+
 	//if you took the last one, add it's gems
-	if(numSteps < steps && memo[r][c] == 1){
+	if(memo[r][c] == 1){
 		numGems += mag[r];
+		gemsUsed.push_back(numGems);
 	}
 
-	return numGems;
+	// for(int i = 0; i<gemsUsed.size(); i++)
+	// 	cout << gemsUsed[i] << " ";
+
+	return gemsUsed;
 
 }
 
