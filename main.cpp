@@ -114,8 +114,8 @@ int num_gems(int steps, vector<int> mag){
 
 	//out(memo);
 
-	//if it took too many steps, return -1
-	if(memo[0][0] > steps)
+	//if the number of steps can't be achieved, return -1
+	if(memo[0][0] < steps)
 		return -1;
 
 	//trace back
