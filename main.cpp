@@ -146,7 +146,7 @@ vector<int> numGems(vector<int> mag){
 	//if you took the last one, add it's gems
 	if(memo[r][c] == 1){
 		numberGems += mag[r];
-		gemsUsed.push_back(numGems);
+		gemsUsed.push_back(numberGems);
 	}
 
 	// for(int i = 0; i<gemsUsed.size(); i++)
