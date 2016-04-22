@@ -122,7 +122,7 @@ vector<int> numGems(vector<int> mag){
 	//trace back
 	r = 0;
 	int c = 1;
-	int numGems = 0;
+	int numberGems = 0;
 	vector<int> gemsUsed;
 	gemsUsed.push_back(0);
 	while(r<mag.size()-1){
@@ -130,9 +130,9 @@ vector<int> numGems(vector<int> mag){
 		//if you took this one, add his value to the gems
 		if(memo[r][c] > memo[r+1][c]){
 
-			numGems += mag[r];
+			numberGems += mag[r];
 
-			gemsUsed.push_back(numGems);
+			gemsUsed.push_back(numberGems);
 
 			//trace back
 			c = mag[r]+1;
@@ -145,7 +145,7 @@ vector<int> numGems(vector<int> mag){
 
 	//if you took the last one, add it's gems
 	if(memo[r][c] == 1){
-		numGems += mag[r];
+		numberGems += mag[r];
 		gemsUsed.push_back(numGems);
 	}
 
@@ -197,10 +197,8 @@ void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Re
 
         // Go through each unvisted Realm
         for (int i = 0; i < unvisted.size(); i++){ // May have an issue with size, seeing it's being chnaged in loop
-
         	// If we're at the current node, ignore it, don't push it back on to the queue
             if (unvisted.front()->numId != current->numId){ // May want to make this -1 instead of NULL
-
                 // Get the new distance
                 int newDistance = current->distance + graph[current->numId][unvisted.front()->numId];
                 // If new distance is less than previous, change previous and add to priority queue
@@ -220,6 +218,7 @@ void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Re
             unvisted.pop();
         }
     }
+    cout << current.distance << endl;
 
     // // Print the results
     // if (current.name != final.name){
@@ -343,3 +342,21 @@ int main(){
 
     return 0;
 }
+
+/*
+4
+sitting
+6
+1 2 1 3 2 4
+knitting
+4
+4 2 3 1
+knowing
+5
+2 3 1 4 2
+kneeding
+4
+1 3 4 2
+sitting
+kneeding
+*/
