@@ -113,7 +113,7 @@ vector<int> numGems(vector<int> mag){
 
 	}
 
-	out(memo);
+	//out(memo);
 
 	//if it took too many steps, return -1
 	// if(memo[0][0] < steps)
@@ -194,17 +194,16 @@ void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Re
         for (int i = 0; i < unvisted.size() - 1; i++){ // May have an issue with size, seeing it's being chnaged in loop
 
             // Accounting for realms with no distance
-            if (unvisted.front().distance == numeric_limits<int>::max() && unvisted.gems_required.size() > graph[current.numId][unvisted.front().numId]){ // May want to make this -1 instead of NULL
+            if (unvisted.front().distance == numeric_limits<int>::max() && unvisted.front().gems_required.size() > graph[current.numId][unvisted.front().numId]){ // May want to make this -1 instead of NULL
                 unvisted.front().distance = graph[current.numId][unvisted.front().numId];
             } else {
                 // Get the new distance
                 int newDistance = current.distance + graph[current.numId][unvisted.front().numId];
                 // If new distance is less than previous, change previous and add to priority queue
-                if (newDistance < unvisted.front().distance && unvisted.gems_required.size() > graph[current.numId][unvisted.front().numId]){
+                if (newDistance < unvisted.front().distance && unvisted.front().gems_required.size() > graph[current.numId][unvisted.front().numId]){
                     unvisted.front().lastRealmId = current.numId;
                     unvisted.front().distance = newDistance;
                 }
-            }
 
                 // Add realm back to unvisted queue
                 unvisted.push(unvisted.front());
@@ -263,7 +262,7 @@ int main(){
 
 	for (int i = 0; i < N; i++) {
 		// Calculate the number of gems required for a given number of incantations/swaps
-		realms[i].gems_required = num_gems(realms[i].magi);
+		realms[i].gems_required = numGems(realms[i].magi);
 
 		for (int j = 0; j < N; j++) {
 			if (i != j) {
@@ -284,7 +283,7 @@ int main(){
 
 		// Backtrace to find number of gems
 		while (current.numId != start.numId) {
-			total_gems += gems[current.lastRealmId][current.numId];
+			//total_gems += gems[current.lastRealmId][current.numId];
 			current = realms[current.lastRealmId];
 		}
 
@@ -311,8 +310,8 @@ int main(){
 		// Backtrace to find number of gems
 		while (current.numId != end.numId) {
 		//	cout << "Current: " << current.numId << endl;
-	//		cout << "previous: " << current.lastRealmId << endl;
-			total_gems += gems[current.lastRealmId][current.numId];
+	    // cout << "previous: " << current.lastRealmId << endl;
+			//total_gems += gems[current.lastRealmId][current.numId];
 			current = realms[current.lastRealmId];
 		}
 
