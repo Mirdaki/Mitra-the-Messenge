@@ -14,6 +14,7 @@ struct Realm {
 	vector<int> magi;
     int distance = numeric_limits<int>::max(); // May want to default this to -1
     int numId;
+    int lastRealmId;
 };
 
 struct compare {
@@ -192,7 +193,10 @@ void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Re
                     // Get the new distance
                     int newDistance = current.distance + graph[current.numId][unvisted.front().numId];
                     // If new distance is less than previous, change previous and add to priority queue
-                    if (newDistance < unvisted.front().distance) unvisted.front().distance = newDistance;
+                    if (newDistance < unvisted.front().distance){
+                        unvisted.front().lastRealmId = current.numId;
+                        unvisted.front().distance = newDistance;
+                    }
                 }
 
                 // Add realm back to unvisted queue
@@ -204,12 +208,12 @@ void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Re
         }
     }
 
-    // Print the results
-    if (current.name != final.name){
-        cout << "IMPOSSIBLE";
-    } else {
-        cout << current.distance;
-    }
+    // // Print the results
+    // if (current.name != final.name){
+    //     cout << "IMPOSSIBLE";
+    // } else {
+    //     cout << current.distance;
+    // }
 }
 
 int main(){
