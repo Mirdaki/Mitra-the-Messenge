@@ -230,11 +230,13 @@ int main(){
 		vector<int> magi;
 		int num_magi;
 		cin >> num_magi;
+		//cout << "Num Magi: " << num_magi << endl;
 		for (int j = 0; j < num_magi; j++) {
 			int num;
+			cin >> num;
 			magi.push_back(num);
 		}
-
+		//cout << "Got magi" << endl;
 		r.name = name;
 		r.magi = magi;
 		r.numId = i;
@@ -250,13 +252,15 @@ int main(){
 		if (end_name == realms[i].name) end = realms[i];
 	}
 
-	vector<vector<int> > graph( N, vector<int>(0, N) );
-	vector<vector<int> > gems(N, vector<int>(0, N));
+	vector<vector<int> > graph( N, vector<int>(N,0) );
+	vector<vector<int> > gems(N, vector<int>(N,0));
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
 			if (i != j) {
 				int min_swaps = min_swaps_needed(realms[i].name, realms[j].name);
 				int gems_required = num_gems(min_swaps, realms[i].magi);
+
+				cout << "I: " << i << " J: " << j << endl;
 
 				graph[i][j] = min_swaps;
 				gems[i][j] = gems_required;
@@ -268,8 +272,9 @@ int main(){
 	dijkstra(start, end, graph, realms);
 
 	if (end.distance == numeric_limits<int>::max()) {
-		cout << "IMPOSSIBLE";
+		cout << "IMPOSSIBLE" << endl;
 	} else {
+		cout << "Starting backtrack" << endl;
 		int total_gems = 0;
 		Realm current = end;
 
@@ -277,7 +282,10 @@ int main(){
 		while (current.numId != start.numId) {
 			total_gems += gems[current.lastRealmId][current.numId];
 			current = realms[current.lastRealmId];
+			cout << "asdf" << endl;
 		}
+
+
 
 		cout << end.distance << " " << total_gems << endl;
 	}
@@ -288,20 +296,25 @@ int main(){
 	}
 
 
-
+	cout << "Starting 2nd" << endl;
 	// Do Dijkstras from end to start
 	dijkstra(end, start, graph, realms);
+	cout << "Finished " << endl;
+	cout << start.distance << endl;
 
 	if (start.distance == numeric_limits<int>::max()) {
-		cout << "IMPOSSIBLE";
+		cout << "IMPOSSIBLE" << endl;
 	} else {
 		int total_gems = 0;
 		Realm current = start;
 
 		// Backtrace to find number of gems
 		while (current.numId != end.numId) {
+			cout << "Current: " << current.numId << endl;
+			cout << "previous: " << current.lastRealmId << endl;
 			total_gems += gems[current.lastRealmId][current.numId];
 			current = realms[current.lastRealmId];
+			cout << "asdf" << endl;	
 		}
 
 		cout << start.distance << " " << total_gems << endl;
