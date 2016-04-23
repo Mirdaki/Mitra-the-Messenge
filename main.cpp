@@ -165,7 +165,7 @@ void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Re
     // Assign start node a distance of zero and add it to queue
     
     start.distance = 0;
-    cout << "Start: " << start.numId << " Distance: " << start.distance << endl;
+    //cout << "Start: " << start.numId << " Distance: " << start.distance << endl;
 
     minQue.push(&start);
 
@@ -184,7 +184,7 @@ void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Re
 
         // Make current the next shortest path
         current = minQue.top();
-        cout << "Current: " << current->numId << endl;
+        //cout << "Current: " << current->numId << endl;
         minQue.pop();
 
         // Break if we have destination
@@ -196,7 +196,7 @@ void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Re
         } */
 
         // Go through each unvisted Realm
-        for (int i = 0; i < unvisted.size(); i++){ // May have an issue with size, seeing it's being chnaged in loop
+        for (int i = 0; i < unvisted.size();){ // May have an issue with size, seeing it's being chnaged in loop
         	// If we're at the current node, ignore it, don't push it back on to the queue
             if (unvisted.front()->numId != current->numId){ // May want to make this -1 instead of NULL
                 // Get the new distance
@@ -213,12 +213,13 @@ void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Re
 
                 // Add realm back to unvisted queue
                 unvisted.push(unvisted.front());
+                i++;
             }
             // Pop unvisted queue
             unvisted.pop();
         }
     }
-    cout << current.distance << endl;
+    //cout << current.distance << endl;
 
     // // Print the results
     // if (current.name != final.name){
@@ -294,26 +295,26 @@ int main(){
 			total_gems += current.gems_required[graph[current.lastRealmId][current.numId]];
 
 			current = realms[current.lastRealmId];
-			cout << "Backtrack id " << current.numId << endl;
+			//cout << "Backtrack id " << current.numId << endl;
 
 		}
 
 		cout << realms[start].distance << " " << total_gems << endl;
 	}
 
-	cout << "---- Grid -----" << endl;
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
-			cout << graph[i][j] << " ";
-		}
-		cout << endl;
-	}
+	// cout << "---- Grid -----" << endl;
+	// for (int i = 0; i < N; i++) {
+	// 	for (int j = 0; j < N; j++) {
+	// 		cout << graph[i][j] << " ";
+	// 	}
+	// 	cout << endl;
+	// }
 
 
 
 	// Reset distances
 	for (int i = 0; i < N; i++) {
-		cout << "ID: " << i << " " << realms[i].distance << endl;
+		//cout << "ID: " << i << " " << realms[i].distance << endl;
 		realms[i].distance = numeric_limits<int>::max();
 	}
 
@@ -332,7 +333,7 @@ int main(){
 			total_gems += current.gems_required[graph[current.lastRealmId][current.numId]];
 			current = realms[current.lastRealmId];
 
-			cout << "Backtrack id " << current.numId << endl;
+			//cout << "Backtrack id " << current.numId << endl;
 		}
 
 		cout << realms[end].distance << " " << total_gems << endl;
