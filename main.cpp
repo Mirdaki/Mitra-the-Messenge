@@ -205,12 +205,7 @@ void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Re
 		// Break if we have destination
 		if (final.name == current->name) break;
 
-		/* // Empty the priority queue so the new distances can be added
-		while (minQue.empty() == false) {
-			minQue.pop();
-		} */
-
-					// Go through each unvisted Realm
+		// Go through each unvisted Realm
 		for (int i = 0; i < unvisted.size();) {
 			// Popping them off the unvisited queue
 			Realm *to_visit = unvisted.front();
