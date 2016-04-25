@@ -13,15 +13,15 @@ struct Realm {
 	string name;
 	vector<int> magi;
 	vector<int> gems_required;
-    int distance = numeric_limits<int>::max(); // May want to default this to -1
-    int numId;
-    int lastRealmId;
+	int distance = numeric_limits<int>::max(); // May want to default this to -1
+	int numId;
+	int lastRealmId;
 };
 
 struct compare {
-    bool operator() (const Realm * x, const Realm * y){
-        return x->distance > y->distance;
-    }
+	bool operator() (const Realm * x, const Realm * y){
+		return x->distance > y->distance;
+	}
 };
 
 // input parameters are 2 strings, output is minimum number of swaps to get from 1 string to another
@@ -176,62 +176,73 @@ vector<int> numGems(vector<int> mag) {
 // This will find the the shortest path if possible, and print out the results
 void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Realm>& realms) {
 
-    // Minimum Priority Queue to find the next shortest path
-    priority_queue<Realm*, vector<Realm*>, compare> minQue;
+	// Minimum Priority Queue to find the next shortest path
+	priority_queue<Realm*, vector<Realm*>, compare> minQue;
 
-    // Assign start node a distance of zero and add it to queue
-    start.distance = 0;
-    minQue.push(&start);
+	// Assign start node a distance of zero and add it to queue
+	start.distance = 0;
+	minQue.push(&start);
 
-    // Add all but start realm to unvisted list
-    queue <Realm*> unvisted;
+	// Add all but start realm to unvisted list
+	queue <Realm*> unvisted;
 
-    for (int i = 0; i < realms.size(); i++){
-        if (realms[i].name != start.name) unvisted.push(&realms[i]);
-    }
+	for (int i = 0; i < realms.size(); i++){
+		if (realms[i].name != start.name) unvisted.push(&realms[i]);
+	}
 
 
-    // The current thing we're visiting
-    Realm *current;
+	// The current thing we're visiting
+	Realm *current;
 
-    // The actual dijkstra algorithim
-    while (!minQue.empty()) {
+	// The actual dijkstra algorithim
+	while (!minQue.empty()) {
 
-        // Make current the next shortest path
-        current = minQue.top();
-        //cout << "Current: " << current->numId << endl;
-        minQue.pop();
+		// Make current the next shortest path
+		current = minQue.top();
+		//cout << "Current: " << current->numId << endl;
+		minQue.pop();
 
-        // Break if we have destination
-        if (final.name == current->name) break;
+		// Break if we have destination
+		if (final.name == current->name) break;
 
-        /* // Empty the priority queue so the new distances can be added
-        while (minQue.empty() == false) {
-            minQue.pop();
-        } */
+		/* // Empty the priority queue so the new distances can be added
+		while (minQue.empty() == false) {
+			minQue.pop();
+		} */
 
-                // Go through each unvisted Realm
-        for (int i = 0; i < unvisted.size();){ // May have an issue with size, seeing it's being chnaged in loop
-         	// If we're at the current node, ignore it, don't push it back on to the queue
-             if (unvisted.front()->numId != current->numId){ // May want to make this -1 instead of NULL
-                 // Get the new distance
-                 int newDistance = current->distance + graph[current->numId][unvisted.front()->numId];
-                 // If new distance is less than previous, change previous and add to priority queue
-                 if (newDistance < unvisted.front()->distance && unvisted.front()->gems_required.size() > graph[current->numId][unvisted.front()->numId]){
-                     unvisted.front()->lastRealmId = current->numId;
-                     unvisted.front()->distance = newDistance;
-                    // Add to priority queue
-                    minQue.push(unvisted.front());
+					// Go through each unvisted Realm
+		for (int i = 0; i < unvisted.size();) {
+			// Popping them off the unvisited queue
+			Realm *to_visit = unvisted.front();
+			unvisted.pop();
 
-                }
+			// If we're at the current node, ignore it; don't push it back on to the queue
+			// because we can guarentee we already have the shortest distance to it
 
-                // Add realm back to unvisted queue, because it still might have a shorter path
-                unvisted.push(unvisted.front());
-                i++;
-            }
-            unvisted.pop();
-        }
-    }
+			if (to_visit->numId != current->numId) { 
+				
+				// Calculate the new potential distance
+				int newDistance = current->distance + graph[current->numId][to_visit->numId];
+
+				// If new distance is less than previous best distance, change previous and add node to priority queue
+				if (newDistance < to_visit->distance && 
+					to_visit->gems_required.size() > graph[current->numId][to_visit->numId]) {
+					
+					to_visit->lastRealmId = current->numId;
+					to_visit->distance = newDistance;
+ 
+					// Add to priority queue
+					minQue.push(to_visit);
+
+				}
+
+				// Add realm back to unvisted queue, because it still might have a shorter path
+				unvisted.push(to_visit);
+				i++;
+			}
+		}
+
+	}
 }
 
 int main() {
@@ -340,7 +351,7 @@ int main() {
 		cout << realms[end].distance << " " << total_gems << endl;
 	}
 
-    return 0;
+	return 0;
 }
 
 /*
