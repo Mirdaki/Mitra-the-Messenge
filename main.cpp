@@ -76,33 +76,52 @@ int min_swaps_needed(string first, string second) {
 	// where N is the length of string 1 and M is the length of String 2
 }
 
+//dynamic algorithm to determine the number of gems necessary to complete all possible numbers of steps
+//given the vector of maggi values, find the maximum ascending subsequence (not necessarily contiguous)
+//return the number of gems required for each number of steps given the maximum ascending subsequence
 vector<int> numGems(vector<int> mag) {
 
+	//find the maximum maggi value (O(n));
+	//this will determine the number of columns in the memo array
 	int max = 0;
 	for(int i = 0; i<mag.size(); i++) {
 		if(mag[i] > max)
 			max = mag[i];
 	}
 
+	//memo array is number of (maggi) x (maximum value + 1)
+	//initialized as all zeros
 	vector<int> correctSizeZeroVect(max+1,0);
-	vector<vector<int> > memo(mag.size(),correctSizeZeroVect); 	//mag.size-1 by max array (all zeros to begin)
-																//column is min power allowed, row is index
-																//fill in backwards
+	vector<vector<int> > memo(mag.size(),correctSizeZeroVect); 
+	
+	//Problem state: minimum maggi value allowable (column)
+	//iterate through maggi vector backwards (row)
+	//Decision: is it possible and advantageous to use this maggi given it's value? take the max between:
+		//the steps if this maggi is not taken (the value above in memo)
+		//if it can be taken, the number of steps if this maggi is taken
+			//(the row above, making the minimum allowed 1 above this maggi's value)
 
-
-	int r = mag.size()-1;										//start by filling in top row
-	for(int c = max; c >= 0; c--) {								//if this maggi's value is large enough, write a 1
+	//fill in top row
+	//0 when the value is less than min allowed - you can't use this maggi
+	//1 when the value is at least min allowed - you can use this maggi
+	int r = mag.size()-1;
+	for(int c = max; c >= 0; c--) {	
 		memo[r][c] = (mag[r] >= c);
 	}	
 
+	//iterate through memo matrix backward
 	r--;
 	int valAbove;
 	int takingThis;
 	while (r >=0 ) {
 		for (int c = max; c >= 0; c--) {
-
+			
+			//valAbove = the steps if this maggi is not taken
 			valAbove = memo[r+1][c];
-
+			
+			//takingThis=
+			//if it can be taken, the number of steps if this maggi is taken
+			//(the row above, making the minimum allowed 1 above this maggi's value)
 			if (mag[r] < c) { 										//if this maggi couldn't be selected regardless,
 				takingThis = 0;										//don't select it
 			}									
@@ -113,13 +132,15 @@ vector<int> numGems(vector<int> mag) {
 					takingThis += memo[r+1][mag[r]+1];				//add the max number of other selections from above
 				}
 			}
-
+			
+			//place the maximum of those in the grid
 			memo[r][c] = (takingThis > valAbove) ? takingThis : valAbove;	//take the max of if you selected or rejected this maggi
 		}
 		r--;
 
 	}
 
+	//traceback
 	r = 0;
 	int c = 1;
 	int numberGems = 0;
@@ -131,7 +152,8 @@ vector<int> numGems(vector<int> mag) {
 		if(memo[r][c] > memo[r+1][c]) {
 
 			numberGems += mag[r];
-
+			
+			//add it to the vector
 			gemsUsed.push_back(numberGems);
 
 			//trace back
@@ -141,7 +163,7 @@ vector<int> numGems(vector<int> mag) {
 		r++;
 	}
 
-	//if you took the last one, add it's gems
+	//if you took the last one, add it's gems and push it
 	if (memo[r][c] == 1) {
 		numberGems += mag[r];
 		gemsUsed.push_back(numberGems);
