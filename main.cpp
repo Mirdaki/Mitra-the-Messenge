@@ -57,7 +57,7 @@ int min_swaps_needed(string first, string second) {
 				// we have a match, we use the previous optimal amount which is in the top left adjacent location
 				swaps[j][i] = swaps[j-1][i-1];
 			}
-			
+
 			// no match, we take the minimum of the three previous optimal solutions and add 1
 			else {
 				// the min() function in C++ compares only 2 things at once so I had to run it twice since we have to find the min of 3 elements
@@ -92,8 +92,8 @@ vector<int> numGems(vector<int> mag) {
 	//memo array is number of (maggi) x (maximum value + 1)
 	//initialized as all zeros
 	vector<int> correctSizeZeroVect(max+1,0);
-	vector<vector<int> > memo(mag.size(),correctSizeZeroVect); 
-	
+	vector<vector<int> > memo(mag.size(),correctSizeZeroVect);
+
 	//Problem state: minimum maggi value allowable (column)
 	//iterate through maggi vector backwards (row)
 	//Decision: is it possible and advantageous to use this maggi given it's value? take the max between:
@@ -105,9 +105,9 @@ vector<int> numGems(vector<int> mag) {
 	//0 when the value is less than min allowed - you can't use this maggi
 	//1 when the value is at least min allowed - you can use this maggi
 	int r = mag.size()-1;
-	for(int c = max; c >= 0; c--) {	
+	for(int c = max; c >= 0; c--) {
 		memo[r][c] = (mag[r] >= c);
-	}	
+	}
 
 	//iterate through memo matrix backward
 	r--;
@@ -115,16 +115,16 @@ vector<int> numGems(vector<int> mag) {
 	int takingThis;
 	while (r >=0 ) {
 		for (int c = max; c >= 0; c--) {
-			
+
 			//valAbove = the steps if this maggi is not taken
 			valAbove = memo[r+1][c];
-			
+
 			//takingThis=
 			//if it can be taken, the number of steps if this maggi is taken
 			//(the row above, making the minimum allowed 1 above this maggi's value)
 			if (mag[r] < c) { 										//if this maggi couldn't be selected regardless,
 				takingThis = 0;										//don't select it
-			}									
+			}
 			else {
 				takingThis = 1;
 
@@ -132,7 +132,7 @@ vector<int> numGems(vector<int> mag) {
 					takingThis += memo[r+1][mag[r]+1];				//add the max number of other selections from above
 				}
 			}
-			
+
 			//place the maximum of those in the grid
 			memo[r][c] = (takingThis > valAbove) ? takingThis : valAbove;	//take the max of if you selected or rejected this maggi
 		}
@@ -152,7 +152,7 @@ vector<int> numGems(vector<int> mag) {
 		if(memo[r][c] > memo[r+1][c]) {
 
 			numberGems += mag[r];
-			
+
 			//add it to the vector
 			gemsUsed.push_back(numberGems);
 
@@ -190,7 +190,6 @@ void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Re
 		if (realms[i].name != start.name) unvisted.push(&realms[i]);
 	}
 
-
 	// The current thing we're visiting
 	Realm *current;
 
@@ -214,21 +213,20 @@ void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Re
 			// If we're at the current node, ignore it; don't push it back on to the queue
 			// because we can guarentee we already have the shortest distance to it
 
-			if (to_visit->numId != current->numId) { 
-				
+			if (to_visit->numId != current->numId) {
+
 				// Calculate the new potential distance
 				int newDistance = current->distance + graph[current->numId][to_visit->numId];
 
 				// If new distance is less than previous best distance, change previous and add node to priority queue
-				if (newDistance < to_visit->distance && 
+				if (newDistance < to_visit->distance &&
 					to_visit->gems_required.size() > graph[current->numId][to_visit->numId]) {
-					
+
 					to_visit->lastRealmId = current->numId;
 					to_visit->distance = newDistance;
- 
+
 					// Add to priority queue
 					minQue.push(to_visit);
-
 				}
 
 				// Add realm back to unvisted queue, because it still might have a shorter path
@@ -236,7 +234,6 @@ void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Re
 				i++;
 			}
 		}
-
 	}
 }
 
@@ -332,7 +329,7 @@ int main() {
 	// See if we have a path
 	if (realms[end].distance == numeric_limits<int>::max()) {
 		cout << "IMPOSSIBLE" << endl;
-	} 
+	}
 	else {
 		int total_gems = 0;
 		Realm current = realms[end];
@@ -348,21 +345,3 @@ int main() {
 
 	return 0;
 }
-
-/*
-4
-sitting
-6
-1 2 1 3 2 4
-knitting
-4
-4 2 3 1
-knowing
-5
-2 3 1 4 2
-kneeding
-4
-1 3 4 2
-sitting
-kneeding
-*/
