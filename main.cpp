@@ -188,29 +188,18 @@ void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Re
             minQue.pop();
         } */
 
-        // Go through each unvisted Realm
-        for (int i = 0; i < unvisted.size();) {
-        	// Popping them off the unvisited queue
-            Realm *to_visit = unvisted.front();
-            unvisted.pop();
-
-        	// If we're at the current node, ignore it; don't push it back on to the queue
-        	// because we can guarentee we already have the shortest distance to it
-
-            if (to_visit->numId != current->numId) { 
-                
-                // Calculate the new potential distance
-                int newDistance = current->distance + graph[current->numId][to_visit->numId];
-
-                // If new distance is less than previous best distance, change previous and add node to priority queue
-                if (newDistance < to_visit->distance && 
-                	to_visit->gems_required.size() > graph[current->numId][to_visit->numId]) {
-                    
-                    to_visit->lastRealmId = current->numId;
-                    to_visit->distance = newDistance;
- 
+                // Go through each unvisted Realm
+        for (int i = 0; i < unvisted.size();){ // May have an issue with size, seeing it's being chnaged in loop
+         	// If we're at the current node, ignore it, don't push it back on to the queue
+             if (unvisted.front()->numId != current->numId){ // May want to make this -1 instead of NULL
+                 // Get the new distance
+                 int newDistance = current->distance + graph[current->numId][unvisted.front()->numId];
+                 // If new distance is less than previous, change previous and add to priority queue
+                 if (newDistance < unvisted.front()->distance && unvisted.front()->gems_required.size() > graph[current->numId][unvisted.front()->numId]){
+                     unvisted.front()->lastRealmId = current->numId;
+                     unvisted.front()->distance = newDistance;
                     // Add to priority queue
-                    minQue.push(to_visit);
+                    minQue.push(unvisted.front());
 
                 }
 
@@ -218,6 +207,7 @@ void dijkstra(Realm& start, Realm& final, vector<vector<int> >& graph, vector<Re
                 unvisted.push(unvisted.front());
                 i++;
             }
+            unvisted.pop();
         }
     }
 }
